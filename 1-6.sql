@@ -288,13 +288,24 @@ WHERE MATCH(SHORTEST_PATH(c1(<-(r)-c2){1,2}))
 --PowerBi
 SELECT c1.Id AS IdFirst,
 	   c1.Name AS First,
-	   CONCAT(N'City', c1.Id) AS [First image name],
+	   CONCAT(N'city', c1.Id) AS [First image name],
 	   c2.Id AS IdSecond,
 	   c2.Name AS Second,
-	   CONCAT(N'City', c2.Id) AS [Second image name]
+	   CONCAT(N'city', c2.Id) AS [Second image name]
 FROM [Cities] AS c1,
 	 [Roads] AS r,
 	 [Cities] AS c2
+WHERE MATCH(c1-(r)->c2)
+
+SELECT c1.Id AS IdFirst,
+	   c1.Number AS First,
+	   CONCAT(c1.TypeOfTransport, c1.Id) AS [First image name],
+	   c2.Id AS IdSecond,
+	   c2.Number AS Second,
+	   CONCAT(N'Routes', c2.Id) AS [Second image name]
+FROM [Transports] AS c1,
+	 [TransportIn] AS r,
+	 [Routes] AS c2
 WHERE MATCH(c1-(r)->c2)
 
 SELECT @@SERVERNAME
