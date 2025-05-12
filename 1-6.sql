@@ -192,18 +192,7 @@ VALUES ((SELECT $node_id FROM [Cities] WHERE [Id] = 1), (SELECT $node_id FROM [C
 	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 5), (SELECT $node_id FROM [Cities] WHERE [Id] = 9)),
 	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 4), (SELECT $node_id FROM [Cities] WHERE [Id] = 8)),
 	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 6), (SELECT $node_id FROM [Cities] WHERE [Id] = 10)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 2), (SELECT $node_id FROM [Cities] WHERE [Id] = 1)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 3), (SELECT $node_id FROM [Cities] WHERE [Id] = 1)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 4), (SELECT $node_id FROM [Cities] WHERE [Id] = 1)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 5), (SELECT $node_id FROM [Cities] WHERE [Id] = 1)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 5), (SELECT $node_id FROM [Cities] WHERE [Id] = 2)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 6), (SELECT $node_id FROM [Cities] WHERE [Id] = 2)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 7), (SELECT $node_id FROM [Cities] WHERE [Id] = 2)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 6), (SELECT $node_id FROM [Cities] WHERE [Id] = 3)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 9), (SELECT $node_id FROM [Cities] WHERE [Id] = 5)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 8), (SELECT $node_id FROM [Cities] WHERE [Id] = 4)),
-	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 10), (SELECT $node_id FROM [Cities] WHERE [Id] = 6));
-
+	   ((SELECT $node_id FROM [Cities] WHERE [Id] = 10), (SELECT $node_id FROM [Cities] WHERE [Id] = 8));
 
 --Найти маршруты по которым ездят поезда
 
@@ -285,12 +274,27 @@ FROM [Cities] AS c1,
 WHERE MATCH(SHORTEST_PATH(c1(-(r)->c2)+))
   AND c1.Name = 'Minsk'
 
---Откуда можно доехать из 'Baranovichi' проехав только три города
+--Откуда можно доехать из 'Baranovichi' проехав только два города
 
 SELECT c1.Name,
 	   STRING_AGG(c2.Name, '->') WITHIN GROUP (GRAPH PATH)
 FROM [Cities] AS c1,
 	 [Roads] FOR PATH AS r,
 	 [Cities] FOR PATH AS c2
-WHERE MATCH(SHORTEST_PATH(c1(-(r)->c2){1,3}))
+WHERE MATCH(SHORTEST_PATH(c1(<-(r)-c2){1,2}))
   AND c1.Name = 'Baranovichi'
+
+
+--PowerBi
+SELECT c1.Id AS IdFirst,
+	   c1.Name AS First,
+	   CONCAT(N'City', c1.Id) AS [First image name],
+	   c2.Id AS IdSecond,
+	   c2.Name AS Second,
+	   CONCAT(N'City', c2.Id) AS [Second image name]
+FROM [Cities] AS c1,
+	 [Roads] AS r,
+	 [Cities] AS c2
+WHERE MATCH(c1-(r)->c2)
+
+SELECT @@SERVERNAME
