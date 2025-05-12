@@ -297,15 +297,26 @@ FROM [Cities] AS c1,
 	 [Cities] AS c2
 WHERE MATCH(c1-(r)->c2)
 
-SELECT c1.Id AS IdFirst,
-	   c1.Number AS First,
-	   CONCAT(c1.TypeOfTransport, c1.Id) AS [First image name],
-	   c2.Id AS IdSecond,
-	   c2.Number AS Second,
-	   CONCAT(N'Routes', c2.Id) AS [Second image name]
-FROM [Transports] AS c1,
-	 [TransportIn] AS r,
-	 [Routes] AS c2
-WHERE MATCH(c1-(r)->c2)
+SELECT t.Id AS IdFirst,
+	   t.Number AS First,
+	   CONCAT(t.TypeOfTransport, t.Id) AS [First image name],
+	   r.Id AS IdSecond,
+	   r.Number AS Second,
+	   CONCAT(N'Routes', r.Id) AS [Second image name]
+FROM [Transports] AS t,
+	 [TransportIn] AS ti,
+	 [Routes] AS r
+WHERE MATCH(t-(ti)->r)
+
+SELECT s.Id AS IdFirst,
+	   s.Name AS First,
+	   CONCAT(N'station', c1.Id) AS [First image name],
+	   c.Id AS IdSecond,
+	   c.Name AS Second,
+	   CONCAT(N'city', c.Id) AS [Second image name]
+FROM [Cities] AS c,
+	 [StationIn] AS si,
+	 [Stations] AS s
+WHERE MATCH(s-(si)->c)
 
 SELECT @@SERVERNAME
