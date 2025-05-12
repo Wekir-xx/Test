@@ -310,7 +310,7 @@ WHERE MATCH(t-(ti)->r)
 
 SELECT s.Id AS IdFirst,
 	   s.Name AS First,
-	   CONCAT(N'station', c1.Id) AS [First image name],
+	   CONCAT(N'station', s.Id) AS [First image name],
 	   c.Id AS IdSecond,
 	   c.Name AS Second,
 	   CONCAT(N'city', c.Id) AS [Second image name]
@@ -318,5 +318,21 @@ FROM [Cities] AS c,
 	 [StationIn] AS si,
 	 [Stations] AS s
 WHERE MATCH(s-(si)->c)
+
+SELECT r.Id AS IdFirst,
+	   r.Number AS First,
+	   CONCAT(N'Routes', r.Id) AS [First image name],
+	   s1.Id AS IdSecond,
+	   s1.Name AS Second,
+	   CONCAT(N'station', s1.Id) AS [Second image name],
+	   s2.Id AS IdThrid,
+	   s2.Name AS Thrid,
+	   CONCAT(N'station', s2.Id) AS [Thrid image name]
+FROM [Routes] AS r,
+	 [StationTo] AS st,
+	 [StationFrom] AS sf,
+	 [Stations] AS s1,
+	 [Stations] AS s2
+WHERE MATCH(s1<-(sf)-r-(st)->s2)
 
 SELECT @@SERVERNAME
